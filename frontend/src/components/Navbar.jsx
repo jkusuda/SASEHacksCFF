@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 export default function Navbar() {
   const { user, signOut } = useAuth()
   return (
-    <header className="flex items-stretch justify-between pl-[clamp(1rem,3vw+0.5rem,3rem)] pr-0 border border-black">
+    <header className="flex items-stretch justify-between pl-[clamp(1rem,3vw+0.5rem,3rem)] pr-0 border-2 border-black">
       <Link
         to="/"
         className="font-bold text-[clamp(1.25rem,3vw+1rem,3rem)] tracking-tight flex items-center py-[clamp(0.75rem,2vw+0.5rem,1.25rem)] text-black no-underline hover:opacity-90"

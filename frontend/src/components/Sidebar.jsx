@@ -12,7 +12,7 @@ export default function Sidebar() {
   const location = useLocation()
 
   return (
-    <aside className="w-[clamp(20rem,32vw,28rem)] min-h-screen flex flex-col border-r-4 border-black bg-white shrink-0">
+    <aside className="fixed top-0 left-0 h-screen w-[clamp(14rem,24vw,20rem)] flex flex-col border-r-4 border-black bg-white z-10">
       <Link
         to="/"
         className="text-black no-underline px-8 pt-10 pb-6 hover:opacity-90 block"

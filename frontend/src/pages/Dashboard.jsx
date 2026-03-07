@@ -67,7 +67,7 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-white text-black">
       <Sidebar />
-      <main className="flex-1 flex flex-col min-h-0 p-[clamp(1.5rem,4vw+1rem,3rem)] relative overflow-hidden">
+      <main className="flex-1 flex flex-col min-h-0 ml-[clamp(14rem,24vw,20rem)] p-[clamp(1.5rem,4vw+1rem,3rem)] relative overflow-hidden">
         <Heading className="text-black mb-[clamp(1.5rem,4vw+2rem,4rem)] shrink-0 !text-3xl sm:!text-4xl md:!text-5xl lg:!text-6xl">Dashboard</Heading>
 
         <div className="relative w-full max-w-6xl mx-auto flex-1 flex flex-col min-h-0 max-h-[55vh] mt-6">
@@ -94,7 +94,7 @@ export default function Dashboard() {
           />
 
           {/* Main feature box */}
-          <div className="relative border-4 border-black bg-white p-8 flex-1 min-h-0 flex flex-col z-10">
+          <div className="relative border-[6px] border-black bg-white p-8 flex-1 min-h-0 flex flex-col z-10">
             <textarea
               value={tosText}
               onChange={handleTosChange}
@@ -123,7 +123,7 @@ export default function Dashboard() {
                 )}
                 <button
                   type="button"
-                  className={`bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-[clamp(1.25rem,2vw+0.875rem,1.75rem)] border-4 border-black shadow-[8px_8px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity ${hasText ? 'ml-auto' : ''}`}
+                  className={`bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-[clamp(1.25rem,2vw+0.875rem,1.75rem)] border-[6px] border-black shadow-[8px_8px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity ${hasText ? 'ml-auto' : ''}`}
                 >
                   Start Analysis
                 </button>

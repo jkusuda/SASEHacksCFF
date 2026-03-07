@@ -4,7 +4,7 @@ import { Title, Subheading } from '../components'
 import { useAuth } from '../contexts/AuthContext'
 
 const inputClass =
-  'w-full font-mono text-[clamp(0.875rem,1.5vw+0.5rem,1rem)] border-2 border-black rounded-none px-[clamp(0.75rem,2vw+0.5rem,1rem)] py-[clamp(0.5rem,1.25vw+0.5rem,0.75rem)] bg-white focus:outline-none focus:ring-2 focus:ring-brand-magenta focus:ring-offset-0'
+  'w-full font-mono text-[clamp(0.875rem,1.5vw+0.5rem,1rem)] border-4 border-black rounded-none px-[clamp(0.75rem,2vw+0.5rem,1rem)] py-[clamp(0.5rem,1.25vw+0.5rem,0.75rem)] bg-white focus:outline-none focus:ring-2 focus:ring-brand-magenta focus:ring-offset-0'
 
 const labelClass = 'block font-medium text-[clamp(0.875rem,1.5vw+0.5rem,1rem)] text-black mb-1'
 
@@ -56,7 +56,7 @@ export default function Login() {
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center px-[clamp(1rem,4vw+0.5rem,3rem)] py-[clamp(2rem,6vw+1rem,4rem)]">
-      <div className="w-full max-w-md border-2 border-black p-[clamp(1.5rem,4vw+1rem,2.5rem)] bg-white">
+      <div className="w-full max-w-md border-4 border-black p-[clamp(1.5rem,4vw+1rem,2.5rem)] bg-white">
         <Title className="text-black text-[clamp(2rem,5vw+1.5rem,3.5rem)]">
           {isLogin ? 'Log in' : 'Sign up'}
         </Title>

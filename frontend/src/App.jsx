@@ -4,6 +4,7 @@ import Landing from './pages/Landing'
 import Login from './pages/Login'
 import { AuthProvider } from './contexts/AuthContext'
 import Dashboard from './pages/Dashboard'
+import VirtualCards from './pages/VirtualCards'
 import './App.css'
 
 function AppLayout() {
@@ -17,7 +18,7 @@ function AppLayout() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/virtual-cards" element={<Dashboard />} />
+        <Route path="/dashboard/virtual-cards" element={<VirtualCards />} />
         <Route path="/dashboard/settings" element={<Dashboard />} />
       </Routes>
     </div>
