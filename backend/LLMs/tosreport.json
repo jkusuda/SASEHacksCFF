@@ -1,14 +1,14 @@
 {
   "data_privacy": {
-    "score": 45,
-    "justification": "The terms grant Spotify broad, irrevocable licenses to user content and device resources for advertising purposes, while deferring detailed privacy protections to a separate policy."
+    "score": 35,
+    "justification": "The terms grant Spotify and its business partners broad, irrevocable licenses to user content and device resources for advertising, while deferring detailed privacy protections to a separate policy."
   },
   "integrity": {
-    "score": 70,
-    "justification": "The contract is generally transparent about its terms, including prominently disclosing the mandatory arbitration clause, even though the mass arbitration section is complex."
+    "score": 55,
+    "justification": "While major disclaimers are transparently presented, the complex and burdensome pre-arbitration and mass arbitration processes could be seen as designed to deter legitimate consumer disputes."
   },
   "consumer_fairness": {
-    "score": 25,
-    "justification": "Multiple clauses, including mandatory individual arbitration, class action waiver, low liability caps, and broad rights for Spotify regarding service modification and user content/device usage, are overtly predatory."
+    "score": 15,
+    "justification": "The contract contains multiple blatantly predatory clauses, including mandatory individual arbitration, a class action waiver, severe limitations of liability, a jury trial waiver, and highly burdensome dispute resolution procedures."
   }
 }

@@ -1,4 +1,5 @@
 # routes/ai.py
+import os
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from auth import get_current_user, User
@@ -7,6 +8,8 @@ from LLMs.tostranslate import translate_tos
 from LLMs.toschat import create_chat, ask
 
 ai_router = APIRouter()
+
+TOS_PATH = os.path.join(os.path.dirname(__file__), "..", "LLMs", "tos.txt")
 
 # Store chat sessions in memory keyed by user id
 _chat_sessions: dict = {}
@@ -26,7 +29,9 @@ def get_report(current_user: User = Depends(get_current_user)):
 def get_translate(current_user: User = Depends(get_current_user)):
     """Return the brainrot-flavored red flag summary."""
     try:
-        result = translate_tos()
+        with open(TOS_PATH, "r", encoding="utf-8") as f:
+            tos_text = f.read()
+        result = translate_tos(tos_text)
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
     return {"translation": result}
@@ -42,7 +47,9 @@ def chat(body: ChatRequest, current_user: User = Depends(get_current_user)):
     user_id = current_user.id
     if user_id not in _chat_sessions:
         try:
-            _chat_sessions[user_id] = create_chat()
+            with open(TOS_PATH, "r", encoding="utf-8") as f:
+                tos_text = f.read()
+            _chat_sessions[user_id] = create_chat(tos_text)
         except RuntimeError as e:
             raise HTTPException(status_code=500, detail=str(e))
 

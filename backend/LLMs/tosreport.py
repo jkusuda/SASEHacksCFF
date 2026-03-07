@@ -16,6 +16,9 @@ def analyze_tos(tos_path: str = None, output_path: str = None) -> dict:
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel("gemini-2.5-flash")
 
+    with open(tos_path, "r", encoding="utf-8") as f:
+        tos_text = f.read()
+
     prompt = (
         "You are a consumer-rights analyst. A user has shared the Terms of Service "
         "for a subscription-based service. Analyze the document and respond with ONLY "
