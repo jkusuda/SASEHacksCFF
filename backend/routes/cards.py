@@ -2,20 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 import stripe
 from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
+import stripe
+from typing import Optional
 from auth import get_current_user, User
 from db import supabase
 import os
 
 
 stripe.api_key = os.getenv("STRIPE_API_KEY")
-
-
-user_stripe_id = {
-    "user_id": "user_stripe_id",
-    "0": "",
-    "1": ""
-}
-
 
 class CardholderCreate(BaseModel):
     name: str
@@ -36,6 +32,7 @@ def create_cardholder(cardholder: CardholderCreate, user: User):
 class CreateCard(BaseModel):
     cardholder_id: str
     monthly_limit: Optional[int] = None # In cents
+    subscription: Optional[str] = None
 
 
 def create_card(card: CreateCard):
@@ -50,6 +47,9 @@ def create_card(card: CreateCard):
                     "amount": card.monthly_limit,  # amount in cents ($100)
                     "interval": "monthly"
                 } ]
+            },
+            metadata={
+                "subscription": card.subscription
             }
         )
     else:
@@ -57,13 +57,23 @@ def create_card(card: CreateCard):
             cardholder=card.cardholder_id,
             currency="usd",
             type="virtual",
+            metadata={
+                "subscription": card.subscription
+            }
         )
     return card
 
 
 def get_cardholder(user_id: str):
     try:
-        cardholder = stripe.issuing.Cardholder.retrieve(user_stripe_id[user_id])
+        request = (
+            supabase.table("profiles")
+            .select("stripe_id")
+            .eq("id", user_id)
+            .execute()
+        )
+        print(request.data[0]["stripe_id"])
+        cardholder = stripe.issuing.Cardholder.retrieve(request.data[0]["stripe_id"])
         return cardholder
     except stripe.error.InvalidRequestError:
         return None
@@ -71,7 +81,13 @@ def get_cardholder(user_id: str):
 
 def get_cardholder_cards(user_id: str):
     try:
-        cards = stripe.issuing.Card.list(cardholder=user_stripe_id[user_id])
+        request = (
+            supabase.table("profiles")
+            .select("stripe_id")
+            .eq("id", user_id)
+            .execute()
+        )
+        cards = stripe.issuing.Card.list(cardholder=request.data[0]["stripe_id"])
         return cards
     except stripe.error.InvalidRequestError:
         return None
@@ -79,8 +95,15 @@ def get_cardholder_cards(user_id: str):
 
 def get_card(user_id: str, card_id: str):
     try:
+        request = (
+            supabase.table("profiles")
+            .select("stripe_id")
+            .eq("id", user_id)
+            .execute()
+        )
         card = stripe.issuing.Card.retrieve(card_id)
-        if card.cardholder != user_stripe_id[user_id]:
+        cardholder_id = card.cardholder if isinstance(card.cardholder, str) else card.cardholder.id
+        if cardholder_id != request.data[0]["stripe_id"]:
             return None
         return card
     except stripe.error.InvalidRequestError:
@@ -111,8 +134,15 @@ def get_or_create_cardholder(user: User, name: Optional[str] = None, email: Opti
 
     cardholder_data = CardholderCreate(name = name, email = email, billing = billing)
     ch = create_cardholder(cardholder_data, user)
-    user_stripe_id[user.id] = ch.id
 
+    chid = ch.id
+
+    response = (
+        supabase.table("profiles")
+        .update({"stripe_id": chid})
+        .eq("id", user.id)
+        .execute()
+    )
 
     return ch
 
@@ -120,7 +150,7 @@ def get_or_create_cardholder(user: User, name: Optional[str] = None, email: Opti
 cards_router = APIRouter()
 
 
-@cards_router.get("/list")
+@cards_router.post("/list")
 async def list_cards(current_user: User):
     cardholder = get_cardholder(current_user.id)
     if not cardholder:
@@ -139,6 +169,7 @@ async def create_card_route(card: CreateCard, current_user: User, cardholder: Op
    
     card.cardholder_id = cardholder.id
     new_card = create_card(card)
+
     return new_card
 
 
@@ -146,7 +177,14 @@ async def create_card_route(card: CreateCard, current_user: User, cardholder: Op
 async def cancel_card(card_id: str, current_user: User):
     try:
         card = stripe.issuing.Card.retrieve(card_id)
-        if card.cardholder != user_stripe_id[current_user.id]:
+        request = (
+            supabase.table("profiles")
+            .select("stripe_id")
+            .eq("id", current_user.id)
+            .execute()
+        )
+        cardholder_id = card.cardholder if isinstance(card.cardholder, str) else card.cardholder.id
+        if cardholder_id != request.data[0]["stripe_id"]:
              raise HTTPException(status_code=403, detail="Not authorized to cancel this card.")
              
         stripe.issuing.Card.modify(
@@ -156,3 +194,4 @@ async def cancel_card(card_id: str, current_user: User):
         return {"cancelled": True}
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
