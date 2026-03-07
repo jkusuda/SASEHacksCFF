@@ -15,50 +15,6 @@ TOS_PATH = os.path.join(os.path.dirname(__file__), "..", "LLMs", "tos.txt")
 # Store chat sessions in memory keyed by user id
 _chat_sessions: dict = {}
 
-# All columns that the three functions fill in
-_SCAN_COLUMNS = [
-    "tos", "translation",
-    "data_privacy_score", "data_privacy_just",
-    "integrity_score", "integrity_just",
-    "consumer_fairness_score", "consumer_fairness_just",
-]
-
-
-def _find_incomplete_scan():
-    """Find the most recent scan row that has at least one NULL column, or return None."""
-    rows = (
-        supabase.table("scans")
-        .select("*")
-        .order("id", desc=True)
-        .limit(1)
-        .execute()
-    )
-    if not rows.data:
-        return None
-    row = rows.data[0]
-    for col in _SCAN_COLUMNS:
-        if row.get(col) is None:
-            return row
-    return None
-
-
-def _save_to_scan(data: dict):
-    """Insert into a new row or update an existing incomplete row."""
-    incomplete = _find_incomplete_scan()
-    if incomplete:
-        supabase.table("scans").update(data).eq("id", incomplete["id"]).execute()
-    else:
-        supabase.table("scans").insert(data).execute()
-
-
-@ai_router.post("/tos")
-def save_tos(current_user: User = Depends(get_current_user)):
-    """Read the ToS text and save it to the scans table."""
-    with open(TOS_PATH, "r", encoding="utf-8") as f:
-        tos_text = f.read()
-    _save_to_scan({"tos": tos_text})
-    return {"tos": tos_text}
-
 
 @ai_router.get("/report")
 def get_report(current_user: User = Depends(get_current_user)):

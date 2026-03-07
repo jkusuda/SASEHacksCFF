@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { Title, Subheading } from '../components'
 import creditPurple1 from '../assets/credit_purple1.png'
 import creditPurple2 from '../assets/credit_purple2.png'
@@ -30,7 +31,7 @@ export default function Landing() {
 
   return (
     <>
-      <main className="flex-1 flex flex-col items-center justify-center relative px-[clamp(1rem,4vw+0.5rem,3rem)] py-[clamp(3rem,8vw+1rem,5rem)] overflow-hidden">
+      <main className="flex-1 flex flex-col items-center justify-center relative px-[clamp(1rem,4vw+0.5rem,3rem)] pt-[clamp(1.5rem,5vw+0.5rem,3rem)] pb-[clamp(3rem,8vw+1rem,5rem)] overflow-hidden">
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <img
             src={creditPurple1}
@@ -116,12 +117,12 @@ export default function Landing() {
             >
               Get Extension
             </button>
-            <button
-              type="button"
-              className="bg-brand-magenta text-white font-semibold min-h-[clamp(2.75rem,6vw+1.5rem,3.5rem)] px-[clamp(1.25rem,4vw+0.75rem,4rem)] py-[clamp(0.5rem,1.25vw+0.5rem,1rem)] rounded-none text-[clamp(0.875rem,2vw+0.5rem,1.5rem)] shadow-[clamp(4px,2vw,10px)_clamp(4px,2vw,10px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center justify-center bg-brand-magenta text-white font-semibold min-h-[clamp(2.75rem,6vw+1.5rem,3.5rem)] px-[clamp(1.25rem,4vw+0.75rem,4rem)] py-[clamp(0.5rem,1.25vw+0.5rem,1rem)] rounded-none text-[clamp(0.875rem,2vw+0.5rem,1.5rem)] shadow-[clamp(4px,2vw,10px)_clamp(4px,2vw,10px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
             >
               Open Dashboard
-            </button>
+            </Link>
           </div>
         </div>
       </main>
