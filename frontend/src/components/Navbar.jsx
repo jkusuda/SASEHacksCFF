@@ -13,19 +13,14 @@ export default function Navbar() {
       </Link>
       <nav className="flex items-stretch">
         {user ? (
-          <>
-            <span className="font-medium text-[clamp(0.875rem,1.5vw+0.75rem,1.875rem)] flex items-center justify-center bg-white px-[clamp(1rem,2vw+0.5rem,2rem)] self-stretch min-h-0 text-black">
-              {user.email}
-            </span>
-            <button
-              onClick={async () => {
-                await signOut()
-              }}
-              className="font-medium text-[clamp(0.875rem,1.5vw+0.75rem,1.875rem)] hover:opacity-80 flex items-center justify-center bg-white px-[clamp(1rem,2vw+0.5rem,2rem)] self-stretch min-h-0 cursor-pointer text-black no-underline border-l border-black"
-            >
-              Log out
-            </button>
-          </>
+          <button
+            onClick={async () => {
+              await signOut()
+            }}
+            className="font-medium text-[clamp(0.875rem,1.5vw+0.75rem,1.875rem)] hover:opacity-80 flex items-center justify-center bg-white px-[clamp(1rem,2vw+0.5rem,2rem)] self-stretch min-h-0 cursor-pointer text-black no-underline"
+          >
+            Log out
+          </button>
         ) : (
           <Link
             to="/login"
