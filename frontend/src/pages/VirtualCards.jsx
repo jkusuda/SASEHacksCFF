@@ -49,7 +49,7 @@ export default function VirtualCards() {
   return (
     <div className="flex min-h-screen bg-white text-black">
       <Sidebar />
-      <main className="flex-1 flex flex-col min-h-0 ml-[clamp(14rem,24vw,20rem)] p-[clamp(1.5rem,4vw+1rem,3rem)] overflow-auto">
+      <main className="flex-1 flex flex-col min-h-0 ml-[clamp(16rem,26vw,22rem)] p-[clamp(1.5rem,4vw+1rem,3rem)] overflow-auto">
         <Heading className="text-black mb-[clamp(1.5rem,4vw+2rem,4rem)] shrink-0 !text-3xl sm:!text-4xl md:!text-5xl lg:!text-6xl">
           Control Center
         </Heading>

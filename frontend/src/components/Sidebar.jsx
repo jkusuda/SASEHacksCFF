@@ -12,13 +12,13 @@ export default function Sidebar() {
   const location = useLocation()
 
   return (
-    <aside className="fixed top-0 left-0 h-screen w-[clamp(14rem,24vw,20rem)] flex flex-col border-r-4 border-black bg-white z-10">
+    <aside className="fixed top-0 left-0 h-screen w-[clamp(16rem,26vw,22rem)] flex flex-col border-r-4 border-black bg-white z-10">
       <Link
         to="/"
         className="text-black no-underline px-8 pt-10 pb-6 hover:opacity-90 block"
       >
         <Title as="span" className="!text-[clamp(1.75rem,4vw+1.25rem,2.75rem)] uppercase">
-          PROJECT NAME
+          SUBSCRIPTOS
         </Title>
       </Link>
       <div className="border-t-2 border-black mx-6 w-[calc(100%-3rem)]" />

@@ -9,7 +9,7 @@ export default function Navbar() {
         to="/"
         className="font-bold text-[clamp(1.25rem,3vw+1rem,3rem)] tracking-tight flex items-center py-[clamp(0.75rem,2vw+0.5rem,1.25rem)] text-black no-underline hover:opacity-90"
       >
-        PROJECT NAME
+        SUBSCRIPTOS
       </Link>
       <nav className="flex items-stretch">
         {user ? (
