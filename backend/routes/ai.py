@@ -3,6 +3,7 @@ import os
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from auth import get_current_user, User
+from db import supabase
 from LLMs.tosreport import analyze_tos
 from LLMs.tostranslate import translate_tos
 from LLMs.toschat import create_chat, ask
@@ -22,6 +23,16 @@ def get_report(current_user: User = Depends(get_current_user)):
         result = analyze_tos()
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    _save_to_scan({
+        "data_privacy_score": result["data_privacy"]["score"],
+        "data_privacy_just": result["data_privacy"]["justification"],
+        "integrity_score": result["integrity"]["score"],
+        "integrity_just": result["integrity"]["justification"],
+        "consumer_fairness_score": result["consumer_fairness"]["score"],
+        "consumer_fairness_just": result["consumer_fairness"]["justification"],
+    })
+
     return {"report": result}
 
 
@@ -34,6 +45,9 @@ def get_translate(current_user: User = Depends(get_current_user)):
         result = translate_tos(tos_text)
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    _save_to_scan({"translation": result})
+
     return {"translation": result}
 
 

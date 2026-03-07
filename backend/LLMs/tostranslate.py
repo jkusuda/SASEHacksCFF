@@ -26,4 +26,6 @@ def translate_tos(tos_text: str) -> str:
     )
 
     response = model.generate_content(prompt)
-    return response.text
+    result = response.text
+
+    return result
