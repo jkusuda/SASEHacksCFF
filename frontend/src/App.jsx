@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Navbar } from './components'
+import DashboardLayout from './layouts/DashboardLayout'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Popup from './pages/Popup'
@@ -20,10 +21,12 @@ function AppLayout() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/virtual-cards" element={<VirtualCards />} />
-        <Route path="/dashboard/settings" element={<Dashboard />} />
         <Route path="/popup" element={<Popup />} />
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="virtual-cards" element={<VirtualCards />} />
+          <Route path="settings" element={<Dashboard />} />
+        </Route>
       </Routes>
     </div>
   )

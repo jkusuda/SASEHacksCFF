@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Paperclip } from 'lucide-react'
-import { Sidebar, Heading } from '../components'
+import { Heading } from '../components'
 import creditMagenta2 from '../assets/credit_magenta2.png'
 import creditMagenta3 from '../assets/credit_magenta3.png'
 import creditCyan1 from '../assets/credit_cyan1.png'
@@ -121,12 +121,10 @@ export default function Dashboard() {
   }, [uploadAnimatingIn])
 
   return (
-    <div className="flex min-h-screen bg-white text-black">
-      <Sidebar />
-      <main className="flex-1 flex flex-col min-h-0 ml-[clamp(16rem,26vw,22rem)] p-[clamp(1.5rem,4vw+1rem,3rem)] relative">
-        <Heading className="text-black mb-[clamp(1.5rem,4vw+2rem,4rem)] shrink-0 !text-3xl sm:!text-4xl md:!text-5xl lg:!text-6xl">Dashboard</Heading>
+    <>
+      <Heading className="text-black mb-[clamp(1.5rem,4vw+2rem,4rem)] shrink-0 !text-3xl sm:!text-4xl md:!text-5xl lg:!text-6xl">Dashboard</Heading>
 
-        <div className={`relative w-full max-w-6xl mx-auto flex-1 flex flex-col min-h-0 ${report && !resultsClosing ? 'mt-2' : 'mt-6'}`}>
+      <div className={`relative w-full max-w-6xl mx-auto flex-1 flex flex-col min-h-0 ${report && !resultsClosing ? 'mt-2' : 'mt-6'}`}>
           <img
             key={`credit-cyan1-${report !== null}-${resultsClosing}`}
             src={creditCyan1}
@@ -155,7 +153,7 @@ export default function Dashboard() {
           {/* Translation + SCORES: expand on analysis, slow collapse on Start another analysis */}
           {(report || resultsClosing) && (
             <div
-              className="flex-shrink-0 mb-2 overflow-hidden ease-out"
+              className="relative z-20 flex-shrink-0 mb-2 overflow-hidden ease-out"
               style={{
                 maxHeight: tablesVisible && !resultsClosing ? 420 : 0,
                 transition: `max-height ${resultsClosing ? RESULTS_COLLAPSE_MS : RESULTS_EXPAND_MS}ms ease-out`,
@@ -173,7 +171,7 @@ export default function Dashboard() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="border-[6px] border-black bg-white p-6">
                   <h3 className="font-bold text-black text-3xl mb-2">Translation</h3>
-                  <p className="font-mono text-black/90 text-[clamp(1.125rem,1.75vw+0.6rem,1.5rem)]">{MOCK_TRANSLATION}</p>
+                  <p className="font-mono text-black/90 text-[clamp(0.9375rem,1.25vw+0.5rem,1.125rem)]">{MOCK_TRANSLATION}</p>
                 </div>
                 <div className="border-[6px] border-black bg-white p-6">
                   <h3 className="font-bold text-black text-[1.625rem] mb-2">Scores</h3>
@@ -227,7 +225,14 @@ export default function Dashboard() {
                     )}
                     <button
                       type="button"
-                      onClick={() => setReport(hasText ? MOCK_TOS_REPORT : null)}
+                      onClick={() => {
+                      if (hasText) {
+                        setReport(MOCK_TOS_REPORT)
+                        setTosText('')
+                      } else {
+                        setReport(null)
+                      }
+                    }}
                       className="bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-xl border-[4px] border-black shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity ml-auto"
                     >
                       Start Analysis
@@ -239,26 +244,27 @@ export default function Dashboard() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
+                  setChatInput('')
                   if (chatInput.trim()) {
-                    setChatInput('')
+                    // TODO: send message to chat API
                   }
                 }}
                 className="flex-1 min-h-0 flex flex-col"
               >
-                <div className="flex-1 min-h-0 p-3 flex flex-col">
+                <div className="flex-1 min-h-0 p-6 flex flex-col">
                   <textarea
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     placeholder="Start chatting..."
                     className="w-full flex-1 min-h-[56px] font-mono border-0 resize-none focus:outline-none focus:ring-0 placeholder:text-black/40 bg-transparent"
-                    style={{ fontSize: 'clamp(1.0625rem, 1.5vw + 0.6rem, 1.3125rem)' }}
+                    style={{ fontSize: 'clamp(1.125rem, 1.6vw + 0.65rem, 1.5rem)' }}
                     aria-label="Chat message"
                   />
                 </div>
-                <div className="flex justify-end px-3 pb-3 flex-shrink-0">
+                <div className="flex justify-end px-6 pb-6 flex-shrink-0">
                   <button
                     type="submit"
-                    className="bg-brand-cyan text-black font-semibold px-6 py-3 text-base border-4 border-black rounded-none shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer"
+                    className="bg-brand-cyan text-black font-semibold px-8 py-3.5 text-lg border-4 border-black rounded-none shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer"
                   >
                     Ask
                   </button>
@@ -266,8 +272,7 @@ export default function Dashboard() {
               </form>
             )}
           </div>
-        </div>
-      </main>
-    </div>
+      </div>
+    </>
   )
 }
