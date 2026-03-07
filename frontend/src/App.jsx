@@ -10,10 +10,11 @@ import './App.css'
 function AppLayout() {
   const location = useLocation()
   const isDashboard = location.pathname.startsWith('/dashboard')
+  const isLogin = location.pathname === '/login'
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-black">
-      {!isDashboard && <Navbar />}
+      {!isDashboard && !isLogin && <Navbar />}
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />

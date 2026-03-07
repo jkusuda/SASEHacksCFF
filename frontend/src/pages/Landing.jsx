@@ -31,7 +31,7 @@ export default function Landing() {
 
   return (
     <>
-      <main className="flex-1 flex flex-col items-center justify-center relative px-[clamp(1rem,4vw+0.5rem,3rem)] py-[clamp(3rem,8vw+1rem,5rem)] overflow-hidden">
+      <main className="flex-1 flex flex-col items-center justify-center relative px-[clamp(1rem,4vw+0.5rem,3rem)] pt-[clamp(1.5rem,5vw+0.5rem,3rem)] pb-[clamp(3rem,8vw+1rem,5rem)] overflow-hidden">
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <img
             src={creditPurple1}
