@@ -1,14 +1,18 @@
-import { Title, Subheading, Navbar } from './components'
-import creditPurple1 from './assets/credit_purple1.png'
-import creditPurple2 from './assets/credit_purple2.png'
-import creditMagenta1 from './assets/credit_magenta1.png'
-import creditMagenta2 from './assets/credit_magenta2.png'
-import creditCyan1 from './assets/credit_cyan1.png'
-import creditCyan2 from './assets/credit_cyan2.png'
-import './App.css'
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import Landing from './pages/Landing';
+import Popup from './pages/Popup';
 
 function App() {
   return (
+    <HashRouter>
+      <Routes>
+        {/* The main Web Dashboard / Landing Page */}
+        <Route path="/" element={<Landing />} />
+        
+        {/* The specific route that the Chrome Extension will load */}
+        <Route path="/popup" element={<Popup />} />
+      </Routes>
+    </HashRouter>
     <div className="flex flex-col min-h-screen bg-white text-black">
       <Navbar />
 
@@ -83,4 +87,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

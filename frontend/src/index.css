@@ -22,4 +22,19 @@
 body {
   margin: 0;
   min-height: 100vh;
+  /* Specific override for Chrome Extension popup environments */
+  min-width: 350px;
+}
+
+/* Force Extension Popup styling constraints */
+body:has(.extension-container) {
+  width: 350px !important;
+  height: 500px !important;
+  min-height: unset !important;
+  overflow: hidden;
+}
+
+#root:has(.extension-container) {
+  width: 100%;
+  height: 100%;
 }
