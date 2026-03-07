@@ -34,14 +34,14 @@ export default function Login() {
     if (isLogin) {
       const { error } = await signIn(email, password)
       if (error) {
-        setError(error.message)
+        setError(error.message?.toLowerCase().includes('rate limit') ? 'Too many attempts. Please wait a bit and try again.' : error.message)
       } else {
         navigate('/')
       }
     } else {
       const { error } = await signUp(email, password)
       if (error) {
-        setError(error.message)
+        setError(error.message?.toLowerCase().includes('rate limit') ? 'Too many sign-up emails sent. Please wait an hour and try again.' : error.message)
       } else {
         setMessage('Check your email for confirmation!')
         setEmail('')
