@@ -20,6 +20,8 @@
 
   /* Big drop shadow — change offset/blur/color here to tweak globally */
   --shadow-big: 20px 20px 0 0 #000;
+  /* Button drop shadow — used for Start Analysis, Load past conversations, etc. */
+  --shadow-btn: 4px 4px 0 0 #000;
 
   /* Optional extra colors: use in components via style or add to @theme above */
   --color-accent: var(--color-brand-cyan);
@@ -58,5 +60,15 @@ body:has(.extension-container) {
 .animate-card-spin {
   animation: card-spin 0.6s ease-out forwards;
 }
+
+.btn-shadow {
+  box-shadow: var(--shadow-btn);
+}
+
+/* Force button drop shadow so it isn't overwritten by Tailwind/other */
+.btn-shadow-strong {
+  box-shadow: 4px 4px 0 0 #000 !important;
+}
+
 
 

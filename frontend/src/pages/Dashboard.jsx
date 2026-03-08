@@ -294,8 +294,8 @@ export default function Dashboard() {
             <div className="flex justify-end mb-3 flex-shrink-0">
               <button
                 type="button"
-                onClick={() => setResultsClosing(true)}
-                className="bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-xl border-[4px] border-black shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity"
+onClick={() => setResultsClosing(true)}
+              className="bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-xl border-4 border-black btn-shadow hover:opacity-90 cursor-pointer transition-opacity"
               >
                 Start another analysis
               </button>
@@ -367,9 +367,9 @@ export default function Dashboard() {
         )}
 
         {/* One component: ToS view or Start chatting (same layer) */}
-        <div className={`relative border-[6px] border-black bg-white flex flex-col overflow-hidden z-10 ${(report || analysisStarted) && !resultsClosing ? 'max-h-[160px] shrink-0' : 'flex-1 min-h-[260px]'}`}>
+        <div className={`relative border-[6px] border-black bg-white flex flex-col overflow-visible z-10 ${(report || analysisStarted) && !resultsClosing ? 'max-h-[160px] shrink-0' : 'flex-1 min-h-[260px]'}`}>
           {!(report || analysisStarted) || resultsClosing ? (
-            <div className="flex flex-col flex-1 min-h-0 p-8 pb-4">
+            <div className="flex flex-col flex-1 min-h-0 p-8 pb-4 overflow-visible">
               <textarea
                 value={tosText}
                 onChange={handleTosChange}
@@ -382,8 +382,8 @@ export default function Dashboard() {
                   {analysisError}
                 </div>
               )}
-              <div className="relative mt-4 flex shrink-0 flex-col overflow-hidden" style={{ paddingBottom: '0.5rem', marginBottom: '-0.5rem' }}>
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-4 min-h-[3.5rem]">
+              <div className="relative mt-4 flex shrink-0 flex-col overflow-visible" style={{ paddingBottom: '0.5rem', marginBottom: '-0.5rem' }}>
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-4 min-h-[3.5rem] overflow-visible">
                   {(!hasText || uploadAnimatingOut) && (
                     <label
                       className={`flex items-center gap-3 font-sans font-semibold text-[clamp(1.125rem,1.75vw+0.75rem,1.5rem)] text-black cursor-pointer hover:opacity-80 transition-all ease-out ${uploadAnimatingOut
@@ -404,7 +404,7 @@ export default function Dashboard() {
                       type="button"
                       disabled={isAnalyzing}
                       onClick={handleLoadPastConversations}
-                      className="bg-brand-cyan text-black font-semibold px-6 py-3 rounded-none text-lg border-[4px] border-black shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity disabled:opacity-50"
+                      className="bg-brand-cyan text-black font-semibold px-8 py-3.5 rounded-none text-xl border-4 border-black btn-shadow hover:opacity-90 cursor-pointer transition-opacity disabled:opacity-50"
                     >
                       Load past conversations
                     </button>
@@ -412,7 +412,8 @@ export default function Dashboard() {
                       type="button"
                       disabled={isAnalyzing}
                       onClick={handleStartAnalysis}
-                      className="bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-xl border-[4px] border-black shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity disabled:opacity-50"
+                      style={{ boxShadow: '4px 4px 0 0 #000' }}
+                      className="bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-xl border-4 border-black hover:opacity-90 cursor-pointer transition-opacity disabled:opacity-50"
                     >
                       {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
                     </button>
@@ -481,7 +482,7 @@ export default function Dashboard() {
                 <button
                   type="submit"
                   disabled={isChatting || isAnalyzing || !chatInput.trim()}
-                  className={`font-semibold px-8 py-3.5 text-lg border-4 border-black rounded-none shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer mb-2 ml-4 disabled:opacity-50 ${isAnalyzing ? 'bg-brand-purple text-white' : 'bg-brand-cyan text-black'}`}
+                  className={`font-semibold px-8 py-3.5 text-lg border-4 border-black rounded-none btn-shadow hover:opacity-90 cursor-pointer mb-2 ml-4 disabled:opacity-50 ${isAnalyzing ? 'bg-brand-purple text-white' : 'bg-brand-cyan text-black'}`}
                 >
                   {isAnalyzing ? 'Analyzing...' : 'Ask'}
                 </button>
