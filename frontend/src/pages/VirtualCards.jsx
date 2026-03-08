@@ -110,7 +110,7 @@ export default function VirtualCards() {
 
         {/* Grid: as many columns as fit (min 220px each), then wrap; evenly spaced */}
         <div
-          className="mt-6 grid gap-6"
+          className="mt-3 grid gap-6"
           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))' }}
         >
           {loading &&

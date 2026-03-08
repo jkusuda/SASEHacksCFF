@@ -312,9 +312,9 @@ export default function Dashboard() {
 
   return (
     <>
-      <Heading className="text-black mb-[clamp(1.5rem,4vw+2rem,4rem)] shrink-0 !text-3xl sm:!text-4xl md:!text-5xl lg:!text-6xl">Dashboard</Heading>
+      <Heading className="text-black mb-[clamp(0.5rem,2vw+0.5rem,1.5rem)] shrink-0 !text-3xl sm:!text-4xl md:!text-5xl lg:!text-6xl">Dashboard</Heading>
 
-      <div className={`relative w-full max-w-6xl mx-auto flex-1 flex flex-col min-h-0 ${report && !resultsClosing ? 'mt-2' : 'mt-6'}`}>
+      <div className={`relative w-full max-w-6xl mx-auto flex-1 flex flex-col min-h-0 ${report && !resultsClosing ? 'mt-0' : 'mt-3'}`}>
         <img
           key={`credit-cyan1-${report !== null}-${resultsClosing}`}
           src={creditCyan1}
