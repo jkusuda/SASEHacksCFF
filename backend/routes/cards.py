@@ -19,7 +19,7 @@ class CardholderCreate(BaseModel):
     billing: dict
 
 
-def create_cardholder(cardholder: CardholderCreate, user: User):
+def create_cardholder(cardholder: CardholderCreate, user: User = Depends(get_current_user)):
     cardholder = stripe.issuing.Cardholder.create(
         name=cardholder.name,
         email=cardholder.email,
@@ -30,8 +30,13 @@ def create_cardholder(cardholder: CardholderCreate, user: User):
 
 
 class CreateCard(BaseModel):
-    cardholder_id: str
+    cardholder_id: Optional[str] = None
     monthly_limit: Optional[int] = None # In cents
+    subscription: Optional[str] = None
+
+class CreateCardRequest(BaseModel):
+    cardholder: Optional[CardholderCreate] = None
+    monthly_limit: Optional[int] = None
     subscription: Optional[str] = None
 
 
@@ -110,7 +115,7 @@ def get_card(user_id: str, card_id: str):
         return None
 
 
-def get_or_create_cardholder(user: User, name: Optional[str] = None, email: Optional[str] = None, billing: Optional[dict] = None):
+def get_or_create_cardholder(user: User = Depends(get_current_user), name: Optional[str] = None, email: Optional[str] = None, billing: Optional[dict] = None):
     ch = get_cardholder(user.id)
     if ch:
         return ch
@@ -150,31 +155,34 @@ def get_or_create_cardholder(user: User, name: Optional[str] = None, email: Opti
 cards_router = APIRouter()
 
 
-@cards_router.post("/list")
-async def list_cards(current_user: User):
+@cards_router.get("/")
+async def list_cards(current_user: User = Depends(get_current_user)):
     cardholder = get_cardholder(current_user.id)
     if not cardholder:
         return []
-
 
     return stripe.issuing.Card.list(cardholder=cardholder.id)
 
 
 @cards_router.post("/create/")
-async def create_card_route(card: CreateCard, current_user: User, cardholder: Optional[CardholderCreate] = None):
-    if cardholder:
-        cardholder = get_or_create_cardholder(current_user, cardholder.name, cardholder.email, cardholder.billing)
+async def create_card_route(body: CreateCardRequest, current_user: User = Depends(get_current_user)):
+    if body.cardholder:
+        cardholder = get_or_create_cardholder(current_user, body.cardholder.name, body.cardholder.email, body.cardholder.billing)
     else:
         cardholder = get_or_create_cardholder(current_user)
    
-    card.cardholder_id = cardholder.id
-    new_card = create_card(card)
+    internal_card = CreateCard(
+        cardholder_id=cardholder.id,
+        monthly_limit=body.monthly_limit,
+        subscription=body.subscription
+    )
+    new_card = create_card(internal_card)
 
     return new_card
 
 
 @cards_router.delete("/{card_id}")
-async def cancel_card(card_id: str, current_user: User):
+async def cancel_card(card_id: str, current_user: User = Depends(get_current_user)):
     try:
         card = stripe.issuing.Card.retrieve(card_id)
         request = (
