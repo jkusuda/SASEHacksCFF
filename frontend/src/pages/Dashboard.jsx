@@ -22,6 +22,7 @@ export default function Dashboard() {
   const [report, setReport] = useState(null)
   const [translation, setTranslation] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
   const [analysisError, setAnalysisError] = useState('')
   const [resultsClosing, setResultsClosing] = useState(false)
   const [chatInput, setChatInput] = useState('')
@@ -164,6 +165,63 @@ export default function Dashboard() {
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAnalysisError('');
+
+    // Handle standard text files locally
+    if (file.name.endsWith('.txt')) {
+      try {
+        const text = await file.text();
+        handleTosChange({ target: { value: text } });
+      } catch (err) {
+        console.error("Failed to read text file:", err);
+        setAnalysisError("Could not read the text file.");
+      }
+      e.target.value = null; // reset
+      return;
+    }
+
+    // Handle PDF files by sending to the backend parser
+    if (file.name.endsWith('.pdf')) {
+      setIsUploading(true);
+      try {
+        const token = await getToken();
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch(`${apiUrl}/ai/upload`, {
+          method: 'POST',
+          headers, // Fetch will automatically set the correct Content-Type for FormData
+          body: formData
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => null);
+          throw new Error(errData?.detail || "Failed to parse PDF");
+        }
+
+        const data = await res.json();
+        handleTosChange({ target: { value: data.tos_text } });
+      } catch (err) {
+        console.error("PDF upload failed:", err);
+        setAnalysisError(err.message || "Failed to extract text from PDF.");
+      } finally {
+        setIsUploading(false);
+        e.target.value = null; // reset
+      }
+      return;
+    }
+
+    setAnalysisError("Unsupported file type. Please upload a .txt or .pdf file.");
+    e.target.value = null;
   };
 
   const handleLoadPastConversations = async () => {
@@ -385,19 +443,19 @@ export default function Dashboard() {
               <div className="relative mt-4 flex shrink-0 flex-col overflow-hidden" style={{ paddingBottom: '0.5rem', marginBottom: '-0.5rem' }}>
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-4 min-h-[3.5rem]">
                   {(!hasText || uploadAnimatingOut) && (
-                    <label
-                      className={`flex items-center gap-3 font-sans font-semibold text-[clamp(1.125rem,1.75vw+0.75rem,1.5rem)] text-black cursor-pointer hover:opacity-80 transition-all ease-out ${uploadAnimatingOut
-                          ? (uploadApplyOut ? 'translate-y-full opacity-0' : 'translate-y-0 opacity-100')
-                          : uploadAnimatingIn
-                            ? (uploadApplyIn ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0')
-                            : 'translate-y-0 opacity-100'
-                        }`}
-                      style={{ transitionDuration: `${UPLOAD_ANIM_MS}ms` }}
-                    >
-                      <Paperclip aria-hidden className="shrink-0 w-[1em] h-[1em]" strokeWidth={2.5} />
-                      Upload File
-                      <input type="file" className="hidden" accept=".txt,.pdf" />
-                    </label>
+                      <label
+                        className={`flex items-center gap-3 font-sans font-semibold text-[clamp(1.125rem,1.75vw+0.75rem,1.5rem)] text-black ${isUploading ? 'opacity-50 cursor-wait' : 'cursor-pointer hover:opacity-80'} transition-all ease-out ${uploadAnimatingOut
+                            ? (uploadApplyOut ? 'translate-y-full opacity-0' : 'translate-y-0 opacity-100')
+                            : uploadAnimatingIn
+                              ? (uploadApplyIn ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0')
+                              : 'translate-y-0 opacity-100'
+                          }`}
+                        style={{ transitionDuration: `${UPLOAD_ANIM_MS}ms` }}
+                      >
+                        <Paperclip aria-hidden className="shrink-0 w-[1em] h-[1em]" strokeWidth={2.5} />
+                        {isUploading ? 'Extracting PDF...' : 'Upload File'}
+                        <input type="file" className="hidden" accept=".txt,.pdf" onChange={handleFileUpload} disabled={isUploading} />
+                      </label>
                   )}
                   <div className="flex items-center gap-3 ml-auto">
                     <button
