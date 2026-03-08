@@ -24,11 +24,12 @@ class TosRequest(BaseModel):
     tos_text: str
 
 
-def _find_incomplete_scan():
-    """Find the most recent scan row that has at least one NULL column, or return None."""
+def _find_incomplete_scan(user_id: str):
+    """Find the most recent scan row for this user that has at least one NULL column, or return None."""
     rows = (
         supabase.table("scans")
         .select("*")
+        .eq("user_id", user_id)
         .order("id", desc=True)
         .limit(1)
         .execute()
@@ -42,21 +43,23 @@ def _find_incomplete_scan():
     return None
 
 
-def _save_to_scan(data: dict):
-    """Insert into a new row or update an existing incomplete row."""
-    incomplete = _find_incomplete_scan()
+def _save_to_scan(data: dict, user_id: str):
+    """Insert into a new row or update an existing incomplete row for this user."""
+    incomplete = _find_incomplete_scan(user_id)
     if incomplete:
         supabase.table("scans").update(data).eq("id", incomplete["id"]).execute()
     else:
+        data["user_id"] = user_id
         supabase.table("scans").insert(data).execute()
 
 
-def _find_by_company(company_name: str):
-    """Check if a scan with this company name already exists."""
+def _find_by_company(company_name: str, user_id: str):
+    """Check if a scan with this company name already exists for this user."""
     rows = (
         supabase.table("scans")
         .select("*")
         .eq("source_name", company_name)
+        .eq("user_id", user_id)
         .limit(1)
         .execute()
     )
@@ -68,7 +71,7 @@ def _find_by_company(company_name: str):
 @ai_router.post("/tos")
 def save_tos(body: TosRequest, current_user: User = Depends(get_current_user)):
     """Read the ToS text and save it to the scans table."""
-    _save_to_scan({"tos": body.tos_text})
+    _save_to_scan({"tos": body.tos_text}, current_user.id)
     return {"tos": body.tos_text}
 
 
@@ -81,7 +84,7 @@ def get_report(body: TosRequest, current_user: User = Depends(get_current_user))
         raise HTTPException(status_code=500, detail=str(e))
 
     company_name = result["company_name"]
-    existing = _find_by_company(company_name)
+    existing = _find_by_company(company_name, current_user.id)
     if existing and existing.get("data_privacy_score") is not None:
         return {"report": {
             "company_name": existing["source_name"],
@@ -98,7 +101,7 @@ def get_report(body: TosRequest, current_user: User = Depends(get_current_user))
         "integrity_just": result["integrity"]["justification"],
         "consumer_fairness_score": result["consumer_fairness"]["score"],
         "consumer_fairness_just": result["consumer_fairness"]["justification"],
-    })
+    }, current_user.id)
 
     return {"report": result, "cached": False}
 
@@ -109,9 +112,9 @@ def get_translate(body: TosRequest, current_user: User = Depends(get_current_use
     tos_text = body.tos_text
 
     # Check if the most recent scan already has a translation
-    incomplete = _find_incomplete_scan()
+    incomplete = _find_incomplete_scan(current_user.id)
     if incomplete and incomplete.get("source_name"):
-        existing = _find_by_company(incomplete["source_name"])
+        existing = _find_by_company(incomplete["source_name"], current_user.id)
         if existing and existing.get("translation") is not None:
             return {"translation": existing["translation"], "cached": True}
 
@@ -120,7 +123,7 @@ def get_translate(body: TosRequest, current_user: User = Depends(get_current_use
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    _save_to_scan({"translation": result})
+    _save_to_scan({"translation": result}, current_user.id)
 
     return {"translation": result, "cached": False}
 
