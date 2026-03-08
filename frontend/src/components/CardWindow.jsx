@@ -6,7 +6,6 @@ export default function CardWindow({ card, className = '' }) {
     amountPerMonth,
     cardNumber,
     renewalDate,
-    balance,
     limit,
   } = card
 
@@ -32,18 +31,17 @@ export default function CardWindow({ card, className = '' }) {
           >
             {cardNumber}
           </div>
-          <button
-            type="button"
-            className="bg-brand-magenta text-white font-semibold px-4 py-2 border-4 border-black w-fit cursor-pointer text-lg sm:text-xl"
-            style={{ boxShadow }}
-          >
-            Manage Card
-          </button>
           <div className="mt-auto pt-4 px-4 py-3 font-sans space-y-2">
-            <p className="text-xl sm:text-2xl"><span className="font-bold text-black">Balance:</span> <span className="font-mono font-bold text-black">{balance}</span></p>
-            <p className="text-lg sm:text-xl"><span className="font-semibold text-black">Renewal Date:</span> <span className="font-mono text-black">{renewalDate}</span></p>
+            <p className="text-lg sm:text-xl"><span className="font-semibold text-black">Expire Date:</span> <span className="font-mono text-black">{renewalDate}</span></p>
             <p className="text-lg sm:text-xl"><span className="font-semibold text-black">Limit:</span> <span className="font-mono text-black">{limit}</span></p>
           </div>
+          <button
+            type="button"
+            className="mt-4 bg-brand-magenta text-white font-semibold px-4 py-2 border-4 border-black w-fit cursor-pointer text-lg sm:text-xl"
+            style={{ boxShadow }}
+          >
+            Cancel Card
+          </button>
         </div>
       </div>
     </div>
