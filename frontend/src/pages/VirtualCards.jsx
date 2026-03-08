@@ -7,7 +7,7 @@ const boxShadow = '4px 4px 0 0 #000'
 
 
 export default function VirtualCards() {
-  const { user } = useAuth()
+  const { user, getToken } = useAuth()
   const [cards, setCards] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -17,15 +17,15 @@ export default function VirtualCards() {
       if (!user) return
 
       try {
-        const res = await fetch('http://localhost:8000/cards/list', {
-          method: 'POST',
+        const token = await getToken()
+        if (!token) return
+
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+        const res = await fetch(`${apiUrl}/cards/`, {
+          method: 'GET',
           headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            id: user.id,
-            email: user.email || ''
-          })
+            'Authorization': `Bearer ${token}`
+          }
         })
 
         const data = await res.json()

@@ -5,3 +5,4 @@ export { default as Navbar } from "./Navbar.jsx";
 export { default as Sidebar } from "./Sidebar.jsx";
 export { default as CardWindow } from "./CardWindow.jsx";
 export { default as Overlay } from "./Overlay.jsx";
+export { default as VirtualCardForm } from "./VirtualCardForm.jsx";
