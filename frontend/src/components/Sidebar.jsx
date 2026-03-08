@@ -51,7 +51,7 @@ export default function Sidebar() {
         })}
       </nav>
       <div className="mt-auto border-t-2 border-black mx-6 w-[calc(100%-3rem)]" />
-      <div className="px-8 py-6 flex flex-col gap-3 min-w-0 overflow-hidden">
+      <div className="px-8 py-6 flex flex-col gap-3 min-w-0 overflow-visible">
         <Subheading as="span" className="!text-[clamp(1.25rem,2vw+0.65rem,1.75rem)] !font-bold text-black">
           User
         </Subheading>
@@ -61,7 +61,7 @@ export default function Sidebar() {
         <button
           type="button"
           onClick={handleLogout}
-          className="w-full text-left font-bold text-[clamp(0.875rem,1.25vw+0.5rem,1.125rem)] py-2 px-2 -mx-2 rounded-none bg-brand-purple text-white border-t-4 border-r-4 border-b-4 border-black border-l-0 shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity"
+          className="w-full text-left font-bold text-[clamp(0.875rem,1.25vw+0.5rem,1.125rem)] py-2 px-2 rounded-none bg-brand-purple text-white border-[4px] border-black shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity"
         >
           Log out
         </button>
