@@ -1,11 +1,14 @@
 # routes/ai.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from pydantic import BaseModel
+import tempfile
+import os
 from db import supabase
 from auth import get_current_user, User
 from LLMs.tosreport import analyze_tos
 from LLMs.tostranslate import translate_tos
 from LLMs.toschat import create_chat, ask
+from LLMs.pdfparser import parse_pdf
 
 ai_router = APIRouter()
 
@@ -73,6 +76,36 @@ def save_tos(body: TosRequest, current_user: User = Depends(get_current_user)):
     """Read the ToS text and save it to the scans table."""
     _save_to_scan({"tos": body.tos_text}, current_user.id)
     return {"tos": body.tos_text}
+
+
+@ai_router.post("/upload")
+async def upload_pdf(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
+    """Upload a PDF, save it securely as a tempfile, parse the text, delete it, and return the text."""
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+
+    try:
+        # Create a temporary file on disk using python's built-in tempfile
+        fd, temp_path = tempfile.mkstemp(suffix=".pdf")
+        os.close(fd) # we just needed the secure path
+
+        with open(temp_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+
+        # Parse without outputting JSON to disk
+        result = parse_pdf(pdf_path=temp_path, output_path=None)
+        extracted_text = result["full_text"]
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to process PDF: {str(e)}")
+    finally:
+        # Guarantee cleanup even if text extraction crashes
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+    # Don't auto-save to scans yet, let them start analysis on the client.
+    return {"tos_text": extracted_text}
 
 
 @ai_router.post("/report")
