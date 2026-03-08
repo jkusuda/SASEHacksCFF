@@ -109,68 +109,9 @@ Open `http://localhost:5173` in your browser.
 
 Subscriptos follows a client-server architecture with a React frontend, FastAPI backend, Gemini-powered AI analysis layer, and Supabase for auth and data persistence.
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                          SUBSCRIPTOS SYSTEM                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   CLIENT LAYER                        AI LAYER (Gemini 2.5 Flash)            │
-│   ────────────                        ───────────────────────────             │
-│                                                                              │
-│   ┌──────────────────┐                ┌─────────────────────────┐            │
-│   │  Web Dashboard   │───────────────►│     ToS Report          │            │
-│   │  (React 19)      │                │  ┌───────────────────┐  │            │
-│   │                  │                │  │ Data Privacy Score │  │            │
-│   │  - ToS Input     │                │  │ Integrity Score    │  │            │
-│   │  - Score Display │                │  │ Fairness Score     │  │            │
-│   │  - Chat UI       │                │  │ Company Name       │  │            │
-│   │  - Virtual Cards │                │  └───────────────────┘  │            │
-│   └──────────────────┘                └─────────────────────────┘            │
-│                                                                              │
-│   ┌──────────────────┐                ┌─────────────────────────┐            │
-│   │ Chrome Extension │───────────────►│     ToS Translate       │            │
-│   │  (Manifest v3)   │                │  ┌───────────────────┐  │            │
-│   │                  │                │  │ Casual red flag    │  │            │
-│   │  - Popup UI      │                │  │ summary with       │  │            │
-│   │  - Quick Scan    │                │  │ brainrot humor     │  │            │
-│   │  - Card Creation │                │  └───────────────────┘  │            │
-│   └──────────────────┘                └─────────────────────────┘            │
-│                                                                              │
-│                                       ┌─────────────────────────┐            │
-│                                       │     ToS Chat            │            │
-│                                       │  ┌───────────────────┐  │            │
-│                                       │  │ Interactive Q&A    │  │            │
-│                                       │  │ about the ToS      │  │            │
-│                                       │  │ with context       │  │            │
-│                                       │  └───────────────────┘  │            │
-│                                       └─────────────────────────┘            │
-│                                                                              │
-│   API LAYER (FastAPI)                 DATA LAYER                             │
-│   ───────────────────                 ──────────                             │
-│                                                                              │
-│   ┌──────────────────┐                ┌─────────────────────────┐            │
-│   │  /ai/tos         │───────────────►│   Supabase (PostgreSQL) │            │
-│   │  /ai/report      │                │  ┌───────────────────┐  │            │
-│   │  /ai/translate   │                │  │ scans table       │  │            │
-│   │  /ai/chat        │                │  │ profiles table    │  │            │
-│   ├──────────────────┤                │  └───────────────────┘  │            │
-│   │  /cards/list     │                │                         │            │
-│   │  /cards/create   │────────┐       │  ┌───────────────────┐  │            │
-│   │  /cards/{id}     │        │       │  │ Supabase Auth     │  │            │
-│   └──────────────────┘        │       │  │ (JWT tokens)      │  │            │
-│                               │       │  └───────────────────┘  │            │
-│                               │       └─────────────────────────┘            │
-│                               │                                              │
-│                               │       ┌─────────────────────────┐            │
-│                               └──────►│   Stripe Issuing API    │            │
-│                                       │  ┌───────────────────┐  │            │
-│                                       │  │ Virtual cards     │  │            │
-│                                       │  │ Spending limits   │  │            │
-│                                       │  └───────────────────┘  │            │
-│                                       └─────────────────────────┘            │
-│                                                                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="thngabob.png" alt="Subscriptos Architecture" width="800">
+</p>
 
 ### AI Layer
 
