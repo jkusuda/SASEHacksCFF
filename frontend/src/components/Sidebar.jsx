@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', activeClass: 'bg-brand-purple/25 border-4 border-black' },
   { to: '/dashboard/virtual-cards', label: 'Virtual Cards', activeClass: 'bg-brand-magenta/25 border-4 border-black' },
-  { to: '/dashboard/settings', label: 'Settings', activeClass: 'bg-brand-cyan/25 border-4 border-black' },
+  { to: '/dashboard/manage-funds', label: 'Manage Funds', activeClass: 'bg-brand-cyan/25 border-4 border-black' },
 ]
 
 export default function Sidebar() {

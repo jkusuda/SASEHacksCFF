@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import logo from '../assets/logo.png'
 
 export default function Navbar() {
   const { user, signOut } = useAuth()
@@ -7,8 +8,9 @@ export default function Navbar() {
     <header className="flex items-stretch justify-between pl-[clamp(1rem,3vw+0.5rem,3rem)] pr-0 border-2 border-black">
       <Link
         to="/"
-        className="font-bold text-[clamp(1.25rem,3vw+1rem,3rem)] tracking-tight flex items-center py-[clamp(0.75rem,2vw+0.5rem,1.25rem)] text-black no-underline hover:opacity-90"
+        className="font-bold text-[clamp(1.25rem,3vw+1rem,3rem)] tracking-tight flex items-center gap-2 py-[clamp(0.75rem,2vw+0.5rem,1.25rem)] text-black no-underline hover:opacity-90"
       >
+        <img src={logo} alt="" className="h-[1.2em] w-auto object-contain" />
         SUBSCRIPTOS
       </Link>
       <nav className="flex items-stretch">
