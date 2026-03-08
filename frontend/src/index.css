@@ -4,7 +4,7 @@
   --font-sans: "Space Grotesk", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  /* Theme palette: purple, magenta, cyan */
+  /* Theme palette: purple, magenta, cyan — add more in :root below if needed */
   --color-brand-purple: #B084FF;
   --color-brand-magenta: #FF3366;
   --color-brand-cyan: #00ADB5;
@@ -17,6 +17,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Big drop shadow — change offset/blur/color here to tweak globally */
+  --shadow-big: 20px 20px 0 0 #000;
+
+  /* Optional extra colors: use in components via style or add to @theme above */
+  --color-accent: var(--color-brand-cyan);
+  --color-highlight: var(--color-brand-magenta);
 }
 
 body {

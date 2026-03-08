@@ -31,6 +31,11 @@ export default function Dashboard() {
   const [analysisStarted, setAnalysisStarted] = useState(false)
   const [tablesVisible, setTablesVisible] = useState(false)
   const [chatbotVisible, setChatbotVisible] = useState(false)
+  const [pastScans, setPastScans] = useState([])
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [loadPastError, setLoadPastError] = useState('')
+  const [loadingPastId, setLoadingPastId] = useState(null)
   const [uploadAnimatingOut, setUploadAnimatingOut] = useState(false)
   const [uploadApplyOut, setUploadApplyOut] = useState(false)
   const [uploadAnimatingIn, setUploadAnimatingIn] = useState(false)
@@ -158,6 +163,56 @@ export default function Dashboard() {
       setAnalysisStarted(false);
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleLoadPastConversations = async () => {
+    if (historyOpen) {
+      setHistoryOpen(false);
+      return;
+    }
+    setLoadPastError('');
+    setHistoryLoading(true);
+    setHistoryOpen(true);
+    try {
+      const token = await getToken();
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(`${apiUrl}/scans/`, { headers });
+      if (!res.ok) throw new Error('Failed to load history');
+      const data = await res.json();
+      setPastScans(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error('Load past scans failed', e);
+      setLoadPastError('Could not load past conversations.');
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const handleSelectPastScan = async (scanId) => {
+    setLoadPastError('');
+    setLoadingPastId(scanId);
+    try {
+      const token = await getToken();
+      const headers = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(`${apiUrl}/scans/${scanId}`, { headers });
+      if (!res.ok) throw new Error('Failed to load scan');
+      const data = await res.json();
+      setReport(data.report);
+      setTranslation(data.translation || '');
+      setScannedText(data.tos || '');
+      setChatHistory([]);
+      setAnalysisStarted(true);
+      setTablesVisible(true);
+      setChatbotVisible(true);
+      setHistoryOpen(false);
+    } catch (e) {
+      console.error('Load scan failed', e);
+      setLoadPastError('Could not load that conversation.');
+    } finally {
+      setLoadingPastId(null);
     }
   };
 
@@ -328,7 +383,7 @@ export default function Dashboard() {
                 </div>
               )}
               <div className="relative mt-4 flex shrink-0 flex-col overflow-hidden" style={{ paddingBottom: '0.5rem', marginBottom: '-0.5rem' }}>
-                <div className="flex items-center justify-between pt-4 min-h-[3.5rem]">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-4 min-h-[3.5rem]">
                   {(!hasText || uploadAnimatingOut) && (
                     <label
                       className={`flex items-center gap-3 font-sans font-semibold text-[clamp(1.125rem,1.75vw+0.75rem,1.5rem)] text-black cursor-pointer hover:opacity-80 transition-all ease-out ${uploadAnimatingOut
@@ -344,15 +399,53 @@ export default function Dashboard() {
                       <input type="file" className="hidden" accept=".txt,.pdf" />
                     </label>
                   )}
-                  <button
-                    type="button"
-                    disabled={isAnalyzing}
-                    onClick={handleStartAnalysis}
-                    className="bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-xl border-[4px] border-black shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity ml-auto disabled:opacity-50"
-                  >
-                    {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
-                  </button>
+                  <div className="flex items-center gap-3 ml-auto">
+                    <button
+                      type="button"
+                      disabled={isAnalyzing}
+                      onClick={handleLoadPastConversations}
+                      className="bg-brand-cyan text-black font-semibold px-6 py-3 rounded-none text-lg border-[4px] border-black shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity disabled:opacity-50"
+                    >
+                      Load past conversations
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isAnalyzing}
+                      onClick={handleStartAnalysis}
+                      className="bg-brand-purple text-white font-semibold px-8 py-3.5 rounded-none text-xl border-[4px] border-black shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer transition-opacity disabled:opacity-50"
+                    >
+                      {isAnalyzing ? 'Analyzing...' : 'Start Analysis'}
+                    </button>
+                  </div>
                 </div>
+                {historyOpen && (
+                  <div className="mt-4 p-4 border-4 border-black bg-white">
+                    {loadPastError && (
+                      <p className="text-red-600 font-semibold mb-2">{loadPastError}</p>
+                    )}
+                    {historyLoading ? (
+                      <p className="font-mono text-black/70">Loading history...</p>
+                    ) : pastScans.length === 0 ? (
+                      <p className="font-mono text-black/70">No past conversations yet.</p>
+                    ) : (
+                      <ul className="space-y-2 max-h-48 overflow-y-auto">
+                        {pastScans.map((scan) => (
+                          <li key={scan.id}>
+                            <button
+                              type="button"
+                              disabled={loadingPastId !== null}
+                              onClick={() => handleSelectPastScan(scan.id)}
+                              className="w-full text-left font-mono px-4 py-2 border-4 border-black bg-gray-100 hover:bg-brand-cyan/30 transition-colors disabled:opacity-50 text-sm"
+                            >
+                              {scan.description ?? scan.source_name}
+                              {loadingPastId === scan.id ? ' ...' : ''}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           ) : (
@@ -388,7 +481,7 @@ export default function Dashboard() {
                 <button
                   type="submit"
                   disabled={isChatting || isAnalyzing || !chatInput.trim()}
-                  className="bg-brand-cyan text-black font-semibold px-8 py-3.5 text-lg border-4 border-black rounded-none shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer mb-2 ml-4 disabled:opacity-50"
+                  className={`font-semibold px-8 py-3.5 text-lg border-4 border-black rounded-none shadow-[4px_4px_0_0_#000] hover:opacity-90 cursor-pointer mb-2 ml-4 disabled:opacity-50 ${isAnalyzing ? 'bg-brand-purple text-white' : 'bg-brand-cyan text-black'}`}
                 >
                   {isAnalyzing ? 'Analyzing...' : 'Ask'}
                 </button>

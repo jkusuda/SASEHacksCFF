@@ -60,7 +60,7 @@ export default function VirtualCards() {
   return (
     <>
       <Heading className="text-black mb-[clamp(1.5rem,4vw+2rem,4rem)] shrink-0 !text-3xl sm:!text-4xl md:!text-5xl lg:!text-6xl">
-        Control Center
+        Virtual Cards Control Center
       </Heading>
 
 
@@ -90,7 +90,32 @@ export default function VirtualCards() {
           className="mt-6 grid gap-6"
           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))' }}
         >
-          {cards.map((card, index) => (
+          {loading &&
+            [1].map((i) => (
+              <div
+                key={`skeleton-${i}`}
+                className="w-full min-w-0 min-h-[400px] border-4 border-black bg-white flex flex-col overflow-hidden"
+                style={{ boxShadow }}
+              >
+                <div className="flex items-center gap-2 px-4 py-2.5 border-b-4 border-black bg-gray-100 shrink-0">
+                  <span className="w-3 h-3 rounded-full bg-gray-300 border-2 border-black animate-pulse" />
+                  <span className="w-3 h-3 rounded-full bg-gray-300 border-2 border-black animate-pulse" />
+                  <span className="w-3 h-3 rounded-full bg-gray-300 border-2 border-black animate-pulse" />
+                </div>
+                <div className="p-4 flex-1 flex flex-col gap-2.5">
+                  <div className="h-8 w-3/4 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-6 w-1/2 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-10 w-full bg-gray-200 rounded animate-pulse" />
+                  <div className="h-10 w-32 bg-gray-200 rounded animate-pulse" />
+                  <div className="mt-auto pt-4 space-y-2">
+                    <div className="h-6 w-full bg-gray-200 rounded animate-pulse" />
+                    <div className="h-5 w-4/5 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-5 w-3/5 bg-gray-200 rounded animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          {!loading && cards.map((card, index) => (
             <CardWindow key={card.id || `${card.website}-${index}`} card={card} />
           ))}
 

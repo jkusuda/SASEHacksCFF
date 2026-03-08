@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Popup from './pages/Popup'
 import Dashboard from './pages/Dashboard'
 import VirtualCards from './pages/VirtualCards'
+import ManageFunds from './pages/ManageFunds'
 import { AuthProvider } from './contexts/AuthContext'
 import './App.css'
 
@@ -25,7 +26,7 @@ function AppLayout() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="virtual-cards" element={<VirtualCards />} />
-          <Route path="settings" element={<Dashboard />} />
+          <Route path="manage-funds" element={<ManageFunds />} />
         </Route>
       </Routes>
     </div>
