@@ -49,10 +49,6 @@ export default function Popup() {
   const [isLoadingCardInfo, setIsLoadingCardInfo] = useState(false);
   const [cardInfoError, setCardInfoError] = useState('');
 
-  const [activeCardData, setActiveCardData] = useState(null);
-  const [isLoadingCardInfo, setIsLoadingCardInfo] = useState(false);
-  const [cardInfoError, setCardInfoError] = useState('');
-
   const { getToken, user } = useAuth();
 
   useEffect(() => {
@@ -119,29 +115,6 @@ export default function Popup() {
     setTab('cards');
     setTab('cards');
   }
-
-  const handleCardClick = async (cardId) => {
-    setIsLoadingCardInfo(true);
-    setCardInfoError('');
-    setActiveCardData(null);
-    try {
-      const token = await getToken();
-      if (!token) throw new Error("Please log in first.");
-
-      const res = await fetch(`${apiUrl}/cards/${cardId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (!res.ok) throw new Error("Failed to fetch card details");
-      const data = await res.json();
-      setActiveCardData(data);
-    } catch (err) {
-      setCardInfoError(err.message);
-    } finally {
-      setIsLoadingCardInfo(false);
-    }
-  };
 
   const handleCardClick = async (cardId) => {
     setIsLoadingCardInfo(true);
@@ -295,17 +268,6 @@ export default function Popup() {
             ) : (
               <div className="flex flex-col gap-3 mb-6 overflow-y-auto">
                 {cards.map((card, i) => (
-                  <div key={i} className="p-3 bg-brand-cyan/20 border-2 border-black rounded-none flex justify-between items-center gap-2">
-                    <div className="min-w-0">
-                      <p className="font-bold text-sm truncate">{card.metadata?.subscription || card.brand || 'Virtual Card'}</p>
-                      <p className="font-mono text-xs mt-1">**** {card.last4 || '0000'}</p>
-                    </div>
-                    <button
-                      onClick={() => handleCardClick(card.id)}
-                      className="whitespace-nowrap px-3 py-1.5 bg-brand-cyan text-black font-bold rounded-none border-2 border-black shadow-[2px_2px_0_0_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0_0_#000] transition-all duration-200 cursor-pointer text-xs disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
-                    >
-                      View Info
-                    </button>
                   <div key={i} className="p-3 bg-brand-cyan/20 border-2 border-black rounded-none flex justify-between items-center gap-2">
                     <div className="min-w-0">
                       <p className="font-bold text-sm truncate">{card.metadata?.subscription || card.brand || 'Virtual Card'}</p>

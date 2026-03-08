@@ -1,6 +1,18 @@
+import { useState } from 'react'
+
 const boxShadow = '4px 4px 0 0 #000'
 
-export default function CardWindow({ card, className = '' }) {
+export default function CardWindow({ card, onCancel, className = '' }) {
+  const [isCanceling, setIsCanceling] = useState(false)
+
+  const handleCancel = async () => {
+    if (window.confirm('Are you sure you want to cancel this card?')) {
+      setIsCanceling(true)
+      await onCancel(card.id)
+      setIsCanceling(false)
+    }
+  }
+
   const {
     website,
     amountPerMonth,
@@ -37,10 +49,12 @@ export default function CardWindow({ card, className = '' }) {
           </div>
           <button
             type="button"
-            className="mt-4 bg-brand-magenta text-white font-semibold px-4 py-2 border-4 border-black w-fit cursor-pointer text-lg sm:text-xl"
+            onClick={handleCancel}
+            disabled={isCanceling}
+            className="mt-4 bg-brand-magenta text-white font-semibold px-4 py-2 border-4 border-black w-fit cursor-pointer text-lg sm:text-xl disabled:opacity-50"
             style={{ boxShadow }}
           >
-            Cancel Card
+            {isCanceling ? 'Canceling...' : 'Cancel Card'}
           </button>
         </div>
       </div>

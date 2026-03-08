@@ -161,7 +161,9 @@ async def list_cards(current_user: User = Depends(get_current_user)):
     if not cardholder:
         return []
 
-    return stripe.issuing.Card.list(cardholder=cardholder.id)
+    cards = stripe.issuing.Card.list(cardholder=cardholder.id)
+    cards.data = [card for card in cards.data if card.status != "canceled"]
+    return cards
 
 
 @cards_router.post("/create/")

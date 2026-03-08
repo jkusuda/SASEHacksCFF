@@ -56,6 +56,29 @@ export default function VirtualCards() {
     fetchCards()
   }, [user])
 
+  const handleCancelCard = async (cardId) => {
+    try {
+      const token = await getToken()
+      if (!token) return
+
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const res = await fetch(`${apiUrl}/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (res.ok) {
+        setCards(prevCards => prevCards.filter(c => c.id !== cardId))
+      } else {
+        const errorData = await res.json()
+        console.error("Failed to cancel card:", errorData)
+      }
+    } catch (err) {
+      console.error("Error canceling card:", err)
+    }
+  }
 
   return (
     <>
@@ -116,7 +139,7 @@ export default function VirtualCards() {
               </div>
             ))}
           {!loading && cards.map((card, index) => (
-            <CardWindow key={card.id || `${card.website}-${index}`} card={card} />
+            <CardWindow key={card.id || `${card.website}-${index}`} card={card} onCancel={handleCancelCard} />
           ))}
 
           {!loading && cards.length === 0 && (
