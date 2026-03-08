@@ -106,7 +106,7 @@ def get_card(user_id: str, card_id: str):
             .eq("id", user_id)
             .execute()
         )
-        card = stripe.issuing.Card.retrieve(card_id)
+        card = stripe.issuing.Card.retrieve(card_id, expand=["number", "cvc"])
         cardholder_id = card.cardholder if isinstance(card.cardholder, str) else card.cardholder.id
         if cardholder_id != request.data[0]["stripe_id"]:
             return None
@@ -203,3 +203,10 @@ async def cancel_card(card_id: str, current_user: User = Depends(get_current_use
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
+@cards_router.get("/{card_id}")
+async def get_card_endpoint(card_id: str, current_user: User = Depends(get_current_user)):
+    card = get_card(current_user.id, card_id)
+    if not card:
+        raise HTTPException(status_code=404, detail="Card not found or not authorized.")
+    return card
