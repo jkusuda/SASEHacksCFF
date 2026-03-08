@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowDown, Linkedin, Github } from 'lucide-react'
 import { Title, Subheading } from '../components'
+import { useAuth } from '../contexts/AuthContext'
 import creditPurple1 from '../assets/credit_purple1.png'
 import creditPurple2 from '../assets/credit_purple2.png'
 import creditMagenta1 from '../assets/credit_magenta1.png'
@@ -16,6 +17,7 @@ import lucas from '../assets/lucas.jpg'
 const CARD_TRANSITION = 'transform 0.2s ease-out'
 
 export default function Landing() {
+  const { user } = useAuth()
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 })
   const [hasScrolled, setHasScrolled] = useState(false)
 
@@ -132,17 +134,18 @@ export default function Landing() {
               Block sneaky subscriptions. We find the ToS traps and generate burner cards to keep your wallet safe.
             </Subheading>
             <div className="mt-[clamp(1.5rem,5vw+1rem,2.5rem)] flex flex-col sm:flex-row items-center justify-center gap-[clamp(0.75rem,3vw+0.5rem,2rem)]">
-              <button
-                type="button"
-                className="bg-brand-cyan text-black font-semibold min-h-[clamp(2.75rem,6vw+1.5rem,3.5rem)] px-[clamp(1.25rem,4vw+0.75rem,4rem)] py-[clamp(0.5rem,1.25vw+0.5rem,1rem)] rounded-none text-[clamp(0.875rem,2vw+0.5rem,1.5rem)] shadow-[clamp(4px,2vw,10px)_clamp(4px,2vw,10px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
+              <a
+                href="/subscriptos-extension.zip"
+                download="subscriptos-extension.zip"
+                className="inline-flex items-center justify-center bg-brand-cyan text-black font-semibold min-h-[clamp(2.75rem,6vw+1.5rem,3.5rem)] px-[clamp(1.25rem,4vw+0.75rem,4rem)] py-[clamp(0.5rem,1.25vw+0.5rem,1rem)] rounded-none text-[clamp(0.875rem,2vw+0.5rem,1.5rem)] shadow-[clamp(4px,2vw,10px)_clamp(4px,2vw,10px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
               >
                 Get Extension
-              </button>
+              </a>
               <Link
-                to="/dashboard"
+                to={user ? "/dashboard" : "/login"}
                 className="inline-flex items-center justify-center bg-brand-magenta text-white font-semibold min-h-[clamp(2.75rem,6vw+1.5rem,3.5rem)] px-[clamp(1.25rem,4vw+0.75rem,4rem)] py-[clamp(0.5rem,1.25vw+0.5rem,1rem)] rounded-none text-[clamp(0.875rem,2vw+0.5rem,1.5rem)] shadow-[clamp(4px,2vw,10px)_clamp(4px,2vw,10px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
               >
-                Open Dashboard
+                {user ? 'Open Dashboard' : 'Get Started'}
               </Link>
             </div>
           </div>

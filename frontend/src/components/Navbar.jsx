@@ -31,12 +31,13 @@ export default function Navbar() {
             Log in
           </Link>
         )}
-        <button
-          type="button"
-          className="bg-brand-magenta text-white font-semibold text-[clamp(0.875rem,1.5vw+0.75rem,1.875rem)] border-r border-black px-[clamp(1rem,2vw+0.5rem,3rem)] rounded-none shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200 flex items-center justify-center self-stretch min-h-0 cursor-pointer"
+        <a
+          href="/subscriptos-extension.zip"
+          download="subscriptos-extension.zip"
+          className="bg-brand-magenta text-white font-semibold text-[clamp(0.875rem,1.5vw+0.75rem,1.875rem)] border-r border-black px-[clamp(1rem,2vw+0.5rem,3rem)] rounded-none shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200 flex items-center justify-center self-stretch min-h-0 cursor-pointer no-underline"
         >
           Get Extension
-        </button>
+        </a>
       </nav>
     </header>
   )

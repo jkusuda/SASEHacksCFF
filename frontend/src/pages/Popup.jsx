@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { VirtualCardForm } from '../components'
-import logo from '../assets/Subscriptologo.png'
+import logo from '../assets/logo.png'
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
