@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/src/assets/Subscriptologo.png" alt="Subscriptos Logo" width="300">
+  <img src="Subscriptologo.png" alt="Subscriptos Logo" width="300">
 </p>
 
 # Subscriptos | AI-Powered Subscription Protection
