@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { VirtualCardForm } from '../components'
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -65,8 +66,8 @@ export default function Popup() {
         }
       });
       if (!res.ok) throw new Error("Failed to fetch virtual cards");
-      const data = await res.json();
-      setCards(data);
+      const listData = await res.json();
+      setCards(listData?.data || []);
     } catch (err) {
       setCardsError(err.message);
     } finally {
@@ -101,22 +102,13 @@ export default function Popup() {
     }
   }
 
-  const generateCard = async () => {
-    try {
-      const token = await getToken();
-      if (!token) throw new Error("Please log in to generate cards.");
+  const openCreateCard = () => {
+    setTab('create_card');
+  }
 
-      const res = await fetch(`${apiUrl}/cards/`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (!res.ok) throw new Error("Failed to generate card");
-      fetchCards(); // Refresh the list
-    } catch (err) {
-      setCardsError(err.message);
-    }
+  const onCardCreated = () => {
+    fetchCards();
+    setTab('cards');
   }
 
   let dangerScore = '--';
@@ -225,20 +217,31 @@ export default function Popup() {
               <div className="flex flex-col gap-3 mb-6 overflow-y-auto">
                 {cards.map((card, i) => (
                   <div key={i} className="p-3 bg-brand-cyan/20 border-2 border-black rounded-none">
-                    <p className="font-bold text-sm">Virtual Card</p>
-                    <p className="font-mono text-xs">**** **** **** {card.last4 || '0000'}</p>
+                    <p className="font-bold text-sm">Virtual Card - {card.metadata?.subscription || card.brand || 'Virtual Card'}</p>
+                    <p className="font-mono text-xs mt-1">**** **** **** {card.last4 || '0000'}</p>
                   </div>
                 ))}
               </div>
             )}
 
             <button
-              onClick={generateCard}
+              onClick={openCreateCard}
               disabled={isLoadingCards || !user}
-              className="w-full p-3 mt-auto bg-brand-cyan text-black font-bold rounded-none border-4 border-black shadow-[6px_6px_0_0_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[4px_4px_0_0_#000] transition-all duration-200 cursor-pointer text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full p-3 mt-auto bg-brand-cyan text-black font-bold rounded-none border-4 border-black shadow-[6px_6px_0_0_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[4px_4px_0_0_#000] transition-all duration-200 cursor-pointer text-lg disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
             >
               Generate Virtual Card
             </button>
+          </div>
+        )}
+
+        {tab === 'create_card' && (
+          <div className="flex flex-col flex-1 h-full m-[-1.25rem]">
+            <VirtualCardForm 
+               getToken={getToken} 
+               apiUrl={apiUrl} 
+               onSuccess={onCardCreated} 
+               onCancel={() => setTab('cards')} 
+            />
           </div>
         )}
       </main>

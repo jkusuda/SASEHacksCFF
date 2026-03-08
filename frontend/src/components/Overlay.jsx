@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import VirtualCardForm from './VirtualCardForm';
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -141,35 +142,14 @@ export default function Overlay() {
   };
 
 
-  const generateCard = async () => {
-    setMode('card');
-    setIsLoadingCard(true);
+  const openCreateCard = () => {
     setCardError('');
-    try {
-      const token = await getToken();
-      if (!token) throw new Error("Please log in to Subscriptos to generate cards.");
-      
-      const res = await fetch(`${apiUrl}/cards/`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (!res.ok) throw new Error("Failed to generate card");
-      
-      // Fetch latest list
-      const listRes = await fetch(`${apiUrl}/cards/`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const listData = await listRes.json();
-      if (listData && listData.length > 0) {
-        setCardDetails(listData[0]); // Show the newest
-      }
-    } catch (err) {
-      setCardError(err.message);
-    } finally {
-      setIsLoadingCard(false);
-    }
+    setMode('create_card');
+  };
+
+  const onCardCreated = (newCard) => {
+    setCardDetails(newCard);
+    setMode('card');
   };
 
   let safetyScore = '--';
@@ -217,7 +197,7 @@ export default function Overlay() {
               Scan Page For Traps
             </button>
             <button 
-              onClick={generateCard}
+              onClick={openCreateCard}
               disabled={!user}
               className="w-full shrink-0 p-3 bg-brand-cyan text-black font-bold rounded-none border-4 border-black shadow-[6px_6px_0_0_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[4px_4px_0_0_#000] transition-all duration-200 cursor-pointer mb-2 text-base disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -260,7 +240,7 @@ export default function Overlay() {
 
         {mode === 'card' && (
            <div className="flex flex-col m-0">
-             <p className="text-sm mb-4 font-medium">Your protected active trials (via Stripe API):</p>
+             <p className="text-sm mb-4 font-medium">Your new protected virtual card (via Stripe API):</p>
              {isLoadingCard ? (
                <div className="text-center p-8 text-black font-semibold bg-[#f4f4f5] border-4 border-black shadow-[4px_4px_0_0_#000] rounded-none mb-6 text-sm">
                  Loading cards...
@@ -270,12 +250,26 @@ export default function Overlay() {
              ) : cardDetails ? (
                <div className="flex flex-col gap-3 mb-6 overflow-y-auto">
                  <div className="p-3 bg-brand-cyan/20 border-2 border-black rounded-none">
-                   <p className="font-bold text-sm">Virtual Card</p>
-                   <p className="font-mono text-xs">**** **** **** {cardDetails.last4 || '0000'}</p>
+                   <p className="font-bold text-sm">Virtual Card - {cardDetails.metadata?.subscription || cardDetails.brand || 'Subscription'}</p>
+                   <p className="font-mono text-xs mt-1">**** **** **** {cardDetails.last4 || '0000'}</p>
+                   {cardDetails.spending_controls?.spending_limits?.[0]?.amount && (
+                     <p className="font-mono text-[10px] mt-1 text-gray-700">Limit: ${(cardDetails.spending_controls.spending_limits[0].amount / 100).toFixed(2)}/mo</p>
+                   )}
                  </div>
                </div>
              ) : null}
              <button onClick={() => setMode('prompt')} className="w-full p-3 font-bold cursor-pointer transition-colors bg-gray-200 text-black border-4 border-black hover:bg-gray-300">Back</button>
+           </div>
+        )}
+
+        {mode === 'create_card' && (
+           <div className="flex flex-col h-[400px] overflow-hidden m-[-1rem]">
+             <VirtualCardForm 
+                getToken={getToken} 
+                apiUrl={apiUrl} 
+                onSuccess={onCardCreated} 
+                onCancel={() => setMode('prompt')} 
+             />
            </div>
         )}
       </div>
