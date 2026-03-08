@@ -77,6 +77,14 @@ function injectOverlay() {
   const overlayRoot = document.createElement('div');
   overlayRoot.id = 'subscriptos-root';
 
+  if (!document.getElementById('subscriptos-fonts')) {
+    const fontLink = document.createElement('link');
+    fontLink.id = 'subscriptos-fonts';
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap';
+    fontLink.rel = 'stylesheet';
+    document.head.appendChild(fontLink);
+  }
+
   // To ensure the overlay renders on top of everything and doesn't push page content
   overlayRoot.style.position = 'fixed';
   overlayRoot.style.bottom = '0';
