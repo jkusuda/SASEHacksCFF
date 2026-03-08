@@ -7,11 +7,12 @@ scans_router = APIRouter()
 
 @scans_router.get("/")
 def list_scans(current_user: User = Depends(get_current_user)):
-    """Return recent scans for history: id, source_name, created_at (or id as proxy for order)."""
+    """Return recent scans for the current user."""
     try:
         rows = (
             supabase.table("scans")
             .select("id, source_name, translation")
+            .eq("user_id", current_user.id)
             .order("id", desc=True)
             .limit(50)
             .execute()
@@ -35,7 +36,14 @@ def list_scans(current_user: User = Depends(get_current_user)):
 def get_scan(scan_id: str, current_user: User = Depends(get_current_user)):
     """Return one scan as report + translation + tos for restoring a past conversation."""
     try:
-        rows = supabase.table("scans").select("*").eq("id", scan_id).limit(1).execute()
+        rows = (
+            supabase.table("scans")
+            .select("*")
+            .eq("id", scan_id)
+            .eq("user_id", current_user.id)
+            .limit(1)
+            .execute()
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     if not rows.data:
