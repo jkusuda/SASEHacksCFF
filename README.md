@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="transparentsubscriptos.png" alt="Subscriptos Logo" width="300">
+</p>
+
 # Subscriptos | AI-Powered Subscription Protection
 
 ### Built With
