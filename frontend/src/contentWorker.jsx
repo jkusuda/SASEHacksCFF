@@ -83,6 +83,18 @@ function injectOverlay() {
     fontLink.href = 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap';
     fontLink.rel = 'stylesheet';
     document.head.appendChild(fontLink);
+
+    const styleBlock = document.createElement('style');
+    styleBlock.id = 'subscriptos-styles-override';
+    styleBlock.textContent = `
+      #subscriptos-root, #subscriptos-root * {
+        font-family: 'Space Grotesk', system-ui, sans-serif !important;
+      }
+      #subscriptos-root .font-mono, #subscriptos-root .font-mono * {
+        font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+      }
+    `;
+    document.head.appendChild(styleBlock);
   }
 
   // To ensure the overlay renders on top of everything and doesn't push page content
