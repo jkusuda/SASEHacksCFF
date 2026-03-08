@@ -54,7 +54,7 @@ export default function Landing() {
     <>
       <main className="flex-1 flex flex-col w-full">
         {/* --- Hero Section --- */}
-        <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-[clamp(1rem,4vw+0.5rem,3rem)] pt-[clamp(1.5rem,5vw+0.5rem,3rem)] pb-[clamp(3rem,8vw+1rem,5rem)] overflow-hidden bg-[#ffffff]">
+        <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-[clamp(1rem,3vw+0.5rem,2.5rem)] pt-[clamp(1.25rem,4vw+0.5rem,2.5rem)] pb-[clamp(2.5rem,6vw+1rem,4rem)] overflow-hidden bg-[#ffffff]">
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <img
               src={creditPurple1}
@@ -133,17 +133,17 @@ export default function Landing() {
             <Subheading as="p" mono className="mt-6 text-black/90 max-w-4xl mx-auto">
               Block sneaky subscriptions. We find the ToS traps and generate burner cards to keep your wallet safe.
             </Subheading>
-            <div className="mt-[clamp(1.5rem,5vw+1rem,2.5rem)] flex flex-col sm:flex-row items-center justify-center gap-[clamp(0.75rem,3vw+0.5rem,2rem)]">
+            <div className="mt-[clamp(1.25rem,4vw+0.75rem,2rem)] flex flex-col sm:flex-row items-center justify-center gap-[clamp(0.5rem,2vw+0.5rem,1.5rem)]">
               <a
                 href="/subscriptos-extension.zip"
                 download="subscriptos-extension.zip"
-                className="inline-flex items-center justify-center bg-brand-cyan text-black font-semibold min-h-[clamp(2.75rem,6vw+1.5rem,3.5rem)] px-[clamp(1.25rem,4vw+0.75rem,4rem)] py-[clamp(0.5rem,1.25vw+0.5rem,1rem)] rounded-none text-[clamp(0.875rem,2vw+0.5rem,1.5rem)] shadow-[clamp(4px,2vw,10px)_clamp(4px,2vw,10px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
+                className="inline-flex items-center justify-center bg-brand-cyan text-black font-semibold min-h-[clamp(2.5rem,5vw+1.25rem,3rem)] px-[clamp(1rem,3vw+0.5rem,3rem)] py-[clamp(0.5rem,1vw+0.4rem,0.875rem)] rounded-none text-[clamp(0.8125rem,1.5vw+0.5rem,1.25rem)] shadow-[clamp(4px,1.5vw,8px)_clamp(4px,1.5vw,8px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
               >
                 Get Extension
               </a>
               <Link
                 to={user ? "/dashboard" : "/login"}
-                className="inline-flex items-center justify-center bg-brand-magenta text-white font-semibold min-h-[clamp(2.75rem,6vw+1.5rem,3.5rem)] px-[clamp(1.25rem,4vw+0.75rem,4rem)] py-[clamp(0.5rem,1.25vw+0.5rem,1rem)] rounded-none text-[clamp(0.875rem,2vw+0.5rem,1.5rem)] shadow-[clamp(4px,2vw,10px)_clamp(4px,2vw,10px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
+                className="inline-flex items-center justify-center bg-brand-magenta text-white font-semibold min-h-[clamp(2.5rem,5vw+1.25rem,3rem)] px-[clamp(1rem,3vw+0.5rem,3rem)] py-[clamp(0.5rem,1vw+0.4rem,0.875rem)] rounded-none text-[clamp(0.8125rem,1.5vw+0.5rem,1.25rem)] shadow-[clamp(4px,1.5vw,8px)_clamp(4px,1.5vw,8px)_0_0_#000] hover:opacity-90 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 w-full sm:w-auto cursor-pointer"
               >
                 {user ? 'Open Dashboard' : 'Get Started'}
               </Link>
@@ -157,10 +157,10 @@ export default function Landing() {
         </section>
 
         {/* --- About Section --- */}
-        <section className="relative w-full bg-white py-24 px-6 sm:px-12 z-20">
+        <section className="relative w-full bg-white py-20 px-6 sm:px-10 z-20">
           <div className="max-w-7xl mx-auto">
             <h2
-              className="text-4xl sm:text-5xl font-bold uppercase tracking-widest text-black mb-16 text-center"
+              className="text-3xl sm:text-4xl font-bold uppercase tracking-widest text-black mb-12 text-center"
               style={{ textShadow: '4px 4px 0px rgba(0,0,0,0.1)' }}
             >
               Meet The Team

@@ -1,7 +1,7 @@
 export default function Title({ children, className = "", as: Component = "h1", mono = false, ...props }) {
   const fontClass = mono ? "font-mono" : "font-sans";
   const baseClass = "font-black tracking-tight text-balance";
-  const sizeClass = "text-[clamp(2.5rem,8vw+2rem,8.75rem)]";
+  const sizeClass = "text-[clamp(2.25rem,6vw+1.5rem,6rem)]";
 
   return (
     <Component
