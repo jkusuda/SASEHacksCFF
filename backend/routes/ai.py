@@ -1,6 +1,7 @@
 # routes/ai.py
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from db import supabase
 from auth import get_current_user, User
 from LLMs.tosreport import analyze_tos
 from LLMs.tostranslate import translate_tos
@@ -18,6 +19,9 @@ _SCAN_COLUMNS = [
     "integrity_score", "integrity_just",
     "consumer_fairness_score", "consumer_fairness_just",
 ]
+
+class TosRequest(BaseModel):
+    tos_text: str
 
 
 def _find_incomplete_scan():
@@ -62,16 +66,14 @@ def _find_by_company(company_name: str):
 
 
 @ai_router.post("/tos")
-def save_tos(current_user: User = Depends(get_current_user)):
+def save_tos(body: TosRequest, current_user: User = Depends(get_current_user)):
     """Read the ToS text and save it to the scans table."""
-    with open(TOS_PATH, "r", encoding="utf-8") as f:
-        tos_text = f.read()
-    _save_to_scan({"tos": tos_text})
-    return {"tos": tos_text}
+    _save_to_scan({"tos": body.tos_text})
+    return {"tos": body.tos_text}
 
 
-@ai_router.get("/report")
-def get_report(current_user: User = Depends(get_current_user)):
+@ai_router.post("/report")
+def get_report(body: TosRequest, current_user: User = Depends(get_current_user)):
     """Return the structured ToS report with scores. Returns cached data if company already scanned."""
     try:
         result = analyze_tos(body.tos_text)
@@ -101,11 +103,10 @@ def get_report(current_user: User = Depends(get_current_user)):
     return {"report": result, "cached": False}
 
 
-@ai_router.get("/translate")
-def get_translate(current_user: User = Depends(get_current_user)):
+@ai_router.post("/translate")
+def get_translate(body: TosRequest, current_user: User = Depends(get_current_user)):
     """Return the brainrot-flavored red flag summary. Returns cached data if company already scanned."""
-    with open(TOS_PATH, "r", encoding="utf-8") as f:
-        tos_text = f.read()
+    tos_text = body.tos_text
 
     # Check if the most recent scan already has a translation
     incomplete = _find_incomplete_scan()
