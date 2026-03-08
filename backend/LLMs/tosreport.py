@@ -2,22 +2,14 @@ import json
 import os
 import google.generativeai as genai
 
-def analyze_tos(tos_path: str = None, output_path: str = None) -> dict:
-    """Read a Terms of Service file and return a structured JSON analysis using Gemini."""
-    if tos_path is None:
-        tos_path = os.path.join(os.path.dirname(__file__), "tos.txt")
-    if output_path is None:
-        output_path = os.path.join(os.path.dirname(__file__), "tosreport.json")
-
+def analyze_tos(tos_text: str) -> dict:
+    """Analyze a Terms of Service string and return a structured JSON analysis using Gemini."""
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY environment variable is not set.")
 
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel("gemini-2.5-flash")
-
-    with open(tos_path, "r", encoding="utf-8") as f:
-        tos_text = f.read()
 
     prompt = (
         "You are a consumer-rights analyst. A user has shared the Terms of Service "
@@ -72,7 +64,8 @@ def analyze_tos(tos_path: str = None, output_path: str = None) -> dict:
 
     return result
 
-
 if __name__ == "__main__":
-    result = analyze_tos()
-    print(json.dumps(result, indent=2))
+    import sys
+    if len(sys.argv) > 1:
+        res = analyze_tos(sys.argv[1])
+        print(json.dumps(res, indent=2))

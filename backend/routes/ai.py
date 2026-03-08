@@ -1,5 +1,4 @@
 # routes/ai.py
-import os
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from auth import get_current_user, User
@@ -9,8 +8,6 @@ from LLMs.tostranslate import translate_tos
 from LLMs.toschat import create_chat, ask
 
 ai_router = APIRouter()
-
-TOS_PATH = os.path.join(os.path.dirname(__file__), "..", "LLMs", "tos.txt")
 
 # Store chat sessions in memory keyed by user id
 _chat_sessions: dict = {}
@@ -78,7 +75,7 @@ def save_tos(current_user: User = Depends(get_current_user)):
 def get_report(current_user: User = Depends(get_current_user)):
     """Return the structured ToS report with scores. Returns cached data if company already scanned."""
     try:
-        result = analyze_tos()
+        result = analyze_tos(body.tos_text)
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -130,19 +127,23 @@ def get_translate(current_user: User = Depends(get_current_user)):
 
 class ChatRequest(BaseModel):
     message: str
+    tos_text: str = None  # optional, to initialize chat
 
 
 @ai_router.post("/chat")
 def chat(body: ChatRequest, current_user: User = Depends(get_current_user)):
     """Send a question about the ToS and get a response. Maintains conversation history per user."""
     user_id = current_user.id
-    if user_id not in _chat_sessions:
+    
+    if body.tos_text:
+        # Re-initialize chat if new text is provided
         try:
-            with open(TOS_PATH, "r", encoding="utf-8") as f:
-                tos_text = f.read()
-            _chat_sessions[user_id] = create_chat(tos_text)
+            _chat_sessions[user_id] = create_chat(body.tos_text)
         except RuntimeError as e:
             raise HTTPException(status_code=500, detail=str(e))
+            
+    if user_id not in _chat_sessions:
+        raise HTTPException(status_code=400, detail="No active chat session. Please provide tos_text to start one.")
 
     session = _chat_sessions[user_id]
     answer = ask(session, body.message)
